@@ -10,16 +10,26 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
+import com.example.java.testretrofit.flow.repos.ReposPresenter;
+import com.example.java.testretrofit.models.Repo;
+import com.example.java.testretrofit.views.ReposView;
 import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
 
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
 import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements ReposView {
 
     protected  Toolbar toolbar = null;
     protected RecyclerView recyclerView = null;
-    private Observable<CharSequence> queryObservable = null;
+    private Observable<List<Repo>> queryObservable = null;
+    private RecyclerAdapter mAdapter = null;
+    private SearchView searchView = null;
+    private ReposPresenter presenter = new ReposPresenter();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,6 +37,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
         setSupportActionBar(toolbar);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(
                 this,
@@ -40,12 +53,24 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu, menu);
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView = (SearchView) menu.findItem(R.id.search).getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setQueryHint("Search...");
 
-        queryObservable = RxSearchView.queryTextChanges(searchView);
+        RxSearchView.queryTextChanges(searchView)
+                .debounce(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
+                .subscribe(query -> presenter.getRepos(query.toString()));
 
         return true;
+    }
+
+    @Override
+    public void showRepos(List<Repo> list) {
+        mAdapter = new RecyclerAdapter(list);
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
     }
 }

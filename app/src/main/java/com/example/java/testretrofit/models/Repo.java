@@ -3,9 +3,10 @@ package com.example.java.testretrofit.models;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import io.realm.RealmModel;
 import io.realm.RealmObject;
 
-public class Repo extends RealmObject {
+public class Repo implements RealmModel {
 
     @SerializedName("id")
     @Expose
@@ -165,7 +166,7 @@ public class Repo extends RealmObject {
     private String svnUrl;
     @SerializedName("homepage")
     @Expose
-    private Object homepage;
+    private String homepage;
     @SerializedName("size")
     @Expose
     private Integer size;
@@ -195,7 +196,7 @@ public class Repo extends RealmObject {
     private Integer forksCount;
     @SerializedName("mirror_url")
     @Expose
-    private Object mirrorUrl;
+    private String mirrorUrl;
     @SerializedName("open_issues_count")
     @Expose
     private Integer openIssuesCount;
@@ -628,11 +629,11 @@ public class Repo extends RealmObject {
         this.svnUrl = svnUrl;
     }
 
-    public Object getHomepage() {
+    public String getHomepage() {
         return homepage;
     }
 
-    public void setHomepage(Object homepage) {
+    public void setHomepage(String homepage) {
         this.homepage = homepage;
     }
 
@@ -708,11 +709,11 @@ public class Repo extends RealmObject {
         this.forksCount = forksCount;
     }
 
-    public Object getMirrorUrl() {
+    public String getMirrorUrl() {
         return mirrorUrl;
     }
 
-    public void setMirrorUrl(Object mirrorUrl) {
+    public void setMirrorUrl(String mirrorUrl) {
         this.mirrorUrl = mirrorUrl;
     }
 

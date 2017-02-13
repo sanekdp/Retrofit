@@ -19,9 +19,9 @@ public class ReposLocalDataSource extends BaseLocalDataSource implements ReposDa
                 if (list == null)
                     subscriber.onError(new Exception("vse ploho"));
                 else {
-                    List repos = innerRealm.copyFromRealm(list);
+                    List<Repo> repos = innerRealm.copyFromRealm(list);
                     if (repos != null)
-                        subscriber.onSuccess(list);
+                        subscriber.onSuccess(repos);
                     else
                         subscriber.onError(new Exception("vse ploho2"));
                 }
