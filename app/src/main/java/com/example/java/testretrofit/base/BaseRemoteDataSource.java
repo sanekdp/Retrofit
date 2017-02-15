@@ -9,9 +9,6 @@ import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 import rx.schedulers.Schedulers;
 
-/**
- * Created by java on 08.02.2017.
- */
 
 public abstract class BaseRemoteDataSource implements BaseDataSource {
 

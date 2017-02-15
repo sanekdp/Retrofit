@@ -12,6 +12,8 @@ import rx.Single;
 public class ReposRemoteDataSource extends BaseRemoteDataSource implements ReposDataSource {
     @Override
     public Single<List<Repo>> getRepos(String user) {
+        //if (user.equals(""))
+        //    return null;
         return reposService.getRepos(user);
     }
 

@@ -10,11 +10,13 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
+import com.example.java.testretrofit.adapters.RecyclerReposAdapter;
 import com.example.java.testretrofit.flow.repos.ReposPresenter;
 import com.example.java.testretrofit.models.Repo;
 import com.example.java.testretrofit.views.ReposView;
 import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -27,9 +29,9 @@ public class MainActivity extends AppCompatActivity implements ReposView {
     protected  Toolbar toolbar = null;
     protected RecyclerView recyclerView = null;
     private Observable<List<Repo>> queryObservable = null;
-    private RecyclerAdapter mAdapter = null;
+    private RecyclerReposAdapter mAdapter = new RecyclerReposAdapter(null);
     private SearchView searchView = null;
-    private ReposPresenter presenter = new ReposPresenter();
+    private ReposPresenter presenter = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,10 @@ public class MainActivity extends AppCompatActivity implements ReposView {
                 RecyclerView.VERTICAL,
                 false);
         recyclerView.setLayoutManager(layoutManager);
+        List<Repo> list = new ArrayList<Repo>();
+        recyclerView.setAdapter(mAdapter);
+        presenter = new ReposPresenter();
+        presenter.onAttach(this);
     }
 
     @Override
@@ -66,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements ReposView {
 
     @Override
     public void showRepos(List<Repo> list) {
-        mAdapter = new RecyclerAdapter(list);
+        mAdapter = new RecyclerReposAdapter(list);
     }
 
     @Override

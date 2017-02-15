@@ -31,7 +31,8 @@ public class ReposPresenter implements ReposDataSource {
 
     @Override
     public Single<List<Repo>> getRepos(String user) {
-        Single<List<Repo>> single =reposRepository.getRepos(user);
+        user = "sanekdp";
+        Single<List<Repo>> single = reposRepository.getRepos(user);
         Subscription subscription = single.subscribe(list -> {
             if (reposView != null)
                 reposView.showRepos(list);

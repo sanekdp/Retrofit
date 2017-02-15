@@ -13,20 +13,18 @@ import rx.Single;
 public class ReposLocalDataSource extends BaseLocalDataSource implements ReposDataSource {
     @Override
     public Single<List<Repo>> getRepos(String user) {
-        return Single.create(subscriber -> {
-            realm.executeTransaction(innerRealm -> {
-                RealmResults list = innerRealm.where(Repo.class).contains("name", user).findAll();
-                if (list == null)
-                    subscriber.onError(new Exception("vse ploho"));
-                else {
-                    List<Repo> repos = innerRealm.copyFromRealm(list);
-                    if (repos != null)
-                        subscriber.onSuccess(repos);
-                    else
-                        subscriber.onError(new Exception("vse ploho2"));
-                }
-            });
-        });
+        return Single.create(subscriber -> realm.executeTransaction(innerRealm -> {
+            RealmResults list = innerRealm.where(Repo.class).equalTo("name", user).findAll();
+            if (list == null)
+                subscriber.onError(new Exception("vse ploho"));
+            else {
+                List<Repo> repos = innerRealm.copyFromRealm(list);
+                if (repos != null)
+                    subscriber.onSuccess(repos);
+                else
+                    subscriber.onError(new Exception("vse ploho2"));
+            }
+        }));
     }
 
     @Override
@@ -37,7 +35,7 @@ public class ReposLocalDataSource extends BaseLocalDataSource implements ReposDa
     public Single<List<Repo>> saveRepos(List<Repo> list){
 
         realm.executeTransaction(query -> {
-           realm.copyToRealm(list);
+           realm.copyToRealmOrUpdate(list);
         });
         return Single.just(list);
     }
