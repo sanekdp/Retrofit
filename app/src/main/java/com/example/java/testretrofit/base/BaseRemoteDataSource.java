@@ -16,11 +16,17 @@ public abstract class BaseRemoteDataSource implements BaseDataSource {
     protected ReposService reposService = null;
     @Override
     public void init(Context context) {
+        //HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
+        //interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        //OkHttpClient client = new OkHttpClient.Builder().addInterceptor(interceptor).build();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(NEWS_ENDPOINT)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.createWithScheduler(Schedulers.io()))
+                //.client(client)
                 .build();
+        //return retrofit.create(NewsApiInterface.class);
         reposService = retrofit.create(ReposService.class);
     }
 }

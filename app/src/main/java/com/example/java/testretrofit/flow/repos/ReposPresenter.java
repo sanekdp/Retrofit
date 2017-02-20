@@ -10,6 +10,7 @@ import java.util.List;
 
 import rx.Single;
 import rx.Subscription;
+import rx.functions.Action1;
 import rx.internal.util.SubscriptionList;
 
 
@@ -31,13 +32,15 @@ public class ReposPresenter implements ReposDataSource {
 
     @Override
     public Single<List<Repo>> getRepos(String user) {
-        user = "sanekdp";
+        //user = "sanekdp";
         Single<List<Repo>> single = reposRepository.getRepos(user);
-        Subscription subscription = single.subscribe(list -> {
-            if (reposView != null)
-                reposView.showRepos(list);
-        }, throwavle -> throwavle.printStackTrace());
-        subscriptionList.add(subscription);
+        single.subscribe(new Action1<List<Repo>>() {
+                             @Override
+                             public void call(List<Repo> list) {
+                                 reposView.showRepos(list);
+                             }
+                         },
+                throwable -> throwable.printStackTrace()); // Throwable::printStackTrace);
         return single;
     }
 

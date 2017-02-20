@@ -10,7 +10,7 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 
-import com.example.java.testretrofit.adapters.RecyclerReposAdapter;
+import com.example.java.testretrofit.adapters.RecyclerAdapter;
 import com.example.java.testretrofit.flow.repos.ReposPresenter;
 import com.example.java.testretrofit.models.Repo;
 import com.example.java.testretrofit.views.ReposView;
@@ -29,29 +29,40 @@ public class MainActivity extends AppCompatActivity implements ReposView {
     protected  Toolbar toolbar = null;
     protected RecyclerView recyclerView = null;
     private Observable<List<Repo>> queryObservable = null;
-    private RecyclerReposAdapter mAdapter = new RecyclerReposAdapter(null);
+    private RecyclerAdapter mAdapter = new RecyclerAdapter(new String[0]);
     private SearchView searchView = null;
-    private ReposPresenter presenter = null;
+    private ReposPresenter presenter = new ReposPresenter();
+    private String[] mDataSource = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         setSupportActionBar(toolbar);
+        presenter.onAttach(this);
+        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView.setHasFixedSize(true);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//
+////        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(
+////                this,
+////                RecyclerView.VERTICAL,
+////                false);
+//        //recyclerView.setLayoutManager(layoutManager);
+//        //List<Repo> list = new ArrayList<Repo>();
+//        recyclerView.setAdapter(mAdapter);
+
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(
                 this,
                 RecyclerView.VERTICAL,
                 false);
+
         recyclerView.setLayoutManager(layoutManager);
-        List<Repo> list = new ArrayList<Repo>();
-        recyclerView.setAdapter(mAdapter);
-        presenter = new ReposPresenter();
-        presenter.onAttach(this);
+
+        //presenter = new ReposPresenter();
+        //presenter.onAttach(this);
     }
 
     @Override
@@ -72,11 +83,23 @@ public class MainActivity extends AppCompatActivity implements ReposView {
 
     @Override
     public void showRepos(List<Repo> list) {
-        mAdapter = new RecyclerReposAdapter(list);
+        mDataSource = new String[list.size()];
+        for(Repo repo : list){
+            mDataSource[list.indexOf(repo)] = repo.getName();
+        }
+
+        mAdapter.setDataSource(mDataSource);
+        //recyclerView.setAdapter(mAdapter);
     }
 
     @Override
-    public Context getContext() {
+    public Context getContext(){
         return this;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        presenter.onDetach();
     }
 }

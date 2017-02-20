@@ -9,6 +9,7 @@ import java.util.List;
 
 import rx.Single;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 
 
 public class ReposRepository implements ReposDataSource {
@@ -24,8 +25,18 @@ public class ReposRepository implements ReposDataSource {
 
         return remoteDataSource.getRepos(user)
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(list -> localSource.saveRepos(list))
-                .onErrorResumeNext(localSource.getRepos(user));
+                .flatMap(new Func1<List<Repo>, Single<? extends List<Repo>>>() {
+                    @Override
+                    public Single<? extends List<Repo>> call(List<Repo> list) {
+                        return localSource.saveRepos(list);
+                    }
+                })
+                .onErrorResumeNext(new Func1<Throwable, Single<? extends List<Repo>>>() {
+                    @Override
+                    public Single<? extends List<Repo>> call(Throwable error) {
+                        return localSource.getRepos(user);
+                    }
+                });
     }
 
     @Override
