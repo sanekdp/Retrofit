@@ -2,13 +2,17 @@ package com.example.java.testretrofit;
 
 import android.app.SearchManager;
 import android.content.Context;
-import android.support.v7.app.AppCompatActivity;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.customtabs.CustomTabsIntent;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
+import android.widget.Toast;
 
 import com.example.java.testretrofit.adapters.RecyclerAdapter;
 import com.example.java.testretrofit.flow.repos.ReposPresenter;
@@ -16,7 +20,6 @@ import com.example.java.testretrofit.models.Repo;
 import com.example.java.testretrofit.views.ReposView;
 import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -29,10 +32,9 @@ public class MainActivity extends AppCompatActivity implements ReposView {
     protected  Toolbar toolbar = null;
     protected RecyclerView recyclerView = null;
     private Observable<List<Repo>> queryObservable = null;
-    private RecyclerAdapter mAdapter = new RecyclerAdapter(new String[0]);
+    private RecyclerAdapter mAdapter = new RecyclerAdapter();
     private SearchView searchView = null;
     private ReposPresenter presenter = new ReposPresenter();
-    private String[] mDataSource = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,26 +45,15 @@ public class MainActivity extends AppCompatActivity implements ReposView {
         setSupportActionBar(toolbar);
         presenter.onAttach(this);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        recyclerView.setHasFixedSize(true);
-//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-//
-////        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(
-////                this,
-////                RecyclerView.VERTICAL,
-////                false);
-//        //recyclerView.setLayoutManager(layoutManager);
-//        //List<Repo> list = new ArrayList<Repo>();
-//        recyclerView.setAdapter(mAdapter);
 
+        recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(
                 this,
                 RecyclerView.VERTICAL,
                 false);
 
         recyclerView.setLayoutManager(layoutManager);
-
-        //presenter = new ReposPresenter();
-        //presenter.onAttach(this);
+        recyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -83,13 +74,24 @@ public class MainActivity extends AppCompatActivity implements ReposView {
 
     @Override
     public void showRepos(List<Repo> list) {
-        mDataSource = new String[list.size()];
-        for(Repo repo : list){
-            mDataSource[list.indexOf(repo)] = repo.getName();
-        }
+        mAdapter.setDataSource(list);
+        mAdapter.setOnItemClickListener(view -> {
 
-        mAdapter.setDataSource(mDataSource);
-        //recyclerView.setAdapter(mAdapter);
+            Toast.makeText(this, "Text", Toast.LENGTH_SHORT).show();
+            final RecyclerAdapter.ViewHolder holder = (RecyclerAdapter.ViewHolder) recyclerView.findContainingViewHolder(view);
+            if (holder == null) return;
+            final Repo repo = holder.getRepo();
+
+            int primaryColor = ContextCompat.getColor(
+                    this,
+                    R.color.colorPrimary);
+            CustomTabsIntent customTabsIntent = new CustomTabsIntent.Builder()
+                    .setToolbarColor(primaryColor)
+                    .setStartAnimations(this, R.anim.slide_in_right, R.anim.slide_out_left)
+                    .setExitAnimations(this, R.anim.slide_in_left, R.anim.slide_out_right)
+                    .build();
+            customTabsIntent.launchUrl(this, Uri.parse(repo.getUrl()));
+        });
     }
 
     @Override

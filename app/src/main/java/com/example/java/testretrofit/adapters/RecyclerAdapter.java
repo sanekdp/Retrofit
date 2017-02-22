@@ -1,6 +1,7 @@
 package com.example.java.testretrofit.adapters;
 
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -8,63 +9,20 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.java.testretrofit.R;
+import com.example.java.testretrofit.models.Repo;
 
-
-//public class RecyclerReposAdapter extends RecyclerView.Adapter<RecyclerReposAdapter.ViewHolder> {
-//
-//
-//    private String[] dataSource = null;
-//
-//
-//    public static class ViewHolder extends RecyclerView.ViewHolder{
-//
-//        private TextView mNameRepo = null;
-//
-//        public ViewHolder(View itemView) {
-//            super(itemView);
-//            mNameRepo = (TextView) itemView.findViewById(R.id.tv_recycler_item);
-//        }
-//    }
-//
-//    public RecyclerReposAdapter(String[] dataSource) {
-//        this.dataSource = dataSource;
-//        //notifyDataSetChanged();
-//    }
-//
-//    public void setDataSource(String[] dataSource) {
-//        this.dataSource = dataSource;
-//        notifyDataSetChanged();
-//    }
-//
-//    @Override
-//    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//        View v = LayoutInflater.from(parent.getContext())
-//                .inflate(R.layout.recycler_item, parent, false);
-//        ViewHolder vh = new ViewHolder(v);
-//        return vh;
-//    }
-//
-//    @Override
-//    public void onBindViewHolder(ViewHolder holder, int position) {
-//        holder.mNameRepo.setText(dataSource[position]);
-//
-//    }
-//
-//    @Override
-//    public int getItemCount() {
-//        return dataSource == null ? 0 : dataSource.length;
-//    }
-//
-
-
-
+import java.util.ArrayList;
+import java.util.List;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHolder> {
-    private String[] mDataset;
+    private List<Repo> mDataset = new ArrayList<Repo>();
+    private View.OnClickListener mOnItemClickListener;
 
-    // Конструктор
-    public RecyclerAdapter(String[] dataset) {
-        mDataset = dataset;
+    public RecyclerAdapter() {
+    }
+
+    public void setOnItemClickListener(View.OnClickListener onClickListener) {
+        mOnItemClickListener = onClickListener;
     }
 
     @Override
@@ -81,29 +39,37 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(RecyclerAdapter.ViewHolder holder, int position) {
-        holder.mTextView.setText(mDataset[position]);
+        Repo repo = mDataset.get(position);
+        holder.bind(repo);
+        holder.mTextView.setText(repo.getName());
+        holder.itemView.setOnClickListener(mOnItemClickListener);
     }
 
     @Override
     public int getItemCount() {
-        return mDataset.length;
+        return mDataset.size();
     }
 
-    // класс view holder-а с помощью которого мы получаем ссылку на каждый элемент
-    // отдельного пункта списка
+    public void setDataSource(List<Repo> dataSource) {
+        this.mDataset = dataSource;
+        notifyDataSetChanged();
+    }
+
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        // наш пункт состоит только из одного TextView
         public TextView mTextView;
+        private Repo mRepo;
 
         public ViewHolder(View v) {
             super(v);
             mTextView = (TextView) v.findViewById(R.id.tv_recycler_item);
         }
-    }
 
-    public void setDataSource(String[] dataSource) {
-        this.mDataset = dataSource;
-        notifyDataSetChanged();
-    }
+        private  void bind(@NonNull Repo repo){
+            mRepo = repo;
+        }
 
+        public Repo getRepo() {
+            return mRepo;
+        }
+    }
 }
