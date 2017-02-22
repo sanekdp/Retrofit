@@ -6,14 +6,14 @@ import com.google.gson.annotations.SerializedName;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 
-public class Owner extends RealmObject {
 
+public class User extends RealmObject {
     @SerializedName("login")
     @Expose
     private String login;
-    @PrimaryKey
     @SerializedName("id")
     @Expose
+    @PrimaryKey
     private Integer id;
     @SerializedName("avatar_url")
     @Expose
@@ -196,5 +196,4 @@ public class Owner extends RealmObject {
     public void setSiteAdmin(Boolean siteAdmin) {
         this.siteAdmin = siteAdmin;
     }
-
 }

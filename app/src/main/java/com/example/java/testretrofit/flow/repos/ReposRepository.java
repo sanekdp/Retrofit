@@ -11,31 +11,19 @@ import rx.Single;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 
-
 public class ReposRepository implements ReposDataSource {
 
     private ReposLocalDataSource localSource = new ReposLocalDataSource();
     private ReposRemoteDataSource remoteDataSource = new ReposRemoteDataSource();
-
-
-
 
     @Override
     public Single<List<Repo>> getRepos(String user) {
 
         return remoteDataSource.getRepos(user)
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(new Func1<List<Repo>, Single<? extends List<Repo>>>() {
-                    @Override
-                    public Single<? extends List<Repo>> call(List<Repo> list) {
-                        return localSource.saveRepos(list);
-                    }
-                })
-                .onErrorResumeNext(new Func1<Throwable, Single<? extends List<Repo>>>() {
-                    @Override
-                    public Single<? extends List<Repo>> call(Throwable error) {
-                        return localSource.getRepos(user);
-                    }
+                .flatMap(list -> localSource.saveRepos(list))
+                .onErrorResumeNext(error -> {
+                    return localSource.getRepos(user);
                 });
     }
 
@@ -48,6 +36,5 @@ public class ReposRepository implements ReposDataSource {
     public void init(Context context) {
         localSource.init(context);
         remoteDataSource.init(context);
-
     }
 }

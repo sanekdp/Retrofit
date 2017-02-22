@@ -7,10 +7,6 @@ import java.util.List;
 
 import rx.Single;
 
-/**
- * Created by java on 08.02.2017.
- */
-
 public interface ReposDataSource extends BaseDataSource {
     Single<List<Repo>> getRepos(String user);
 

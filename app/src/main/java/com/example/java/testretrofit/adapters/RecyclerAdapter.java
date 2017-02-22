@@ -27,12 +27,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
 
     @Override
     public RecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // create a new view
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.recycler_item, parent, false);
-
-        // тут можно программно менять атрибуты лэйаута (size, margins, paddings и др.)
-
         ViewHolder vh = new ViewHolder(v);
         return vh;
     }

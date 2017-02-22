@@ -13,19 +13,15 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.widget.Toast;
-
 import com.example.java.testretrofit.adapters.RecyclerAdapter;
 import com.example.java.testretrofit.flow.repos.ReposPresenter;
 import com.example.java.testretrofit.models.Repo;
 import com.example.java.testretrofit.views.ReposView;
 import com.jakewharton.rxbinding.support.v7.widget.RxSearchView;
-
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-
 
 public class MainActivity extends AppCompatActivity implements ReposView {
 
@@ -68,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements ReposView {
         RxSearchView.queryTextChanges(searchView)
                 .debounce(1, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
                 .subscribe(query -> presenter.getRepos(query.toString()));
-
         return true;
     }
 

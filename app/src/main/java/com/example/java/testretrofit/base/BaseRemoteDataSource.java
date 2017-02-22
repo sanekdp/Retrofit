@@ -2,7 +2,7 @@ package com.example.java.testretrofit.base;
 
 import android.content.Context;
 
-import com.example.java.testretrofit.ReposService;
+import com.example.java.testretrofit.services.ReposService;
 
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava.RxJavaCallAdapterFactory;

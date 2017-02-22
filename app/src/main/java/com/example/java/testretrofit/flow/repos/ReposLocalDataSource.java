@@ -9,8 +9,6 @@ import io.realm.Case;
 import io.realm.RealmResults;
 import rx.Single;
 
-
-
 public class ReposLocalDataSource extends BaseLocalDataSource implements ReposDataSource {
     @Override
     public Single<List<Repo>> getRepos(String user) {
