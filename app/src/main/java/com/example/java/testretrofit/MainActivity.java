@@ -90,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements ReposView {
                     .setStartAnimations(this, R.anim.slide_in_right, R.anim.slide_out_left)
                     .setExitAnimations(this, R.anim.slide_in_left, R.anim.slide_out_right)
                     .build();
-            customTabsIntent.launchUrl(this, Uri.parse(repo.getUrl()));
+            customTabsIntent.launchUrl(this, Uri.parse(repo.getHtmlUrl()));
         });
     }
 
